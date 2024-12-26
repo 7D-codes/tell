@@ -1,17 +1,21 @@
 "use client";
 
-import type { z } from "zod";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import type { z } from "zod";
 
-import { api } from "~/trpc/react";
 import { UploadButton } from "~/lib/uploadthing";
+import { api } from "~/trpc/react";
 import { EditUserInfoSchema } from "~/validators";
 
 import { doesUserExists } from "~/actions/user";
 
+import { ThemeSelector } from "~/components/theme-selector";
+import { Button } from "~/components/ui/button";
+import { ButtonWithLoader } from "~/components/ui/button-with-loader";
 import {
   Form,
   FormControl,
@@ -20,10 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Button } from "~/components/ui/button";
-import { ButtonWithLoader } from "~/components/ui/button-with-loader";
 import { Input } from "~/components/ui/input";
-import { ThemeSelector } from "~/components/theme-selector";
 import { useToast } from "~/components/ui/use-toast";
 import { UserAvatar } from "~/components/user/user-avatar";
 
@@ -34,6 +35,7 @@ type ImageUploadState = {
 };
 
 export function EditProfileForm() {
+  const router = useRouter();
   const { toast } = useToast();
   const { data } = useSession();
 
@@ -59,6 +61,7 @@ export function EditProfileForm() {
   const editMutation = api.user.update.useMutation({
     onSuccess: () => {
       toast({ description: "Profile was updated." });
+      router.push("/timeline");
     },
     onError: () => {
       toast({

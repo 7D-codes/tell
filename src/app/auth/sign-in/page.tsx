@@ -5,14 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "~/components/providers/auth-provider";
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { toast } from "~/components/ui/use-toast";
@@ -33,7 +26,7 @@ export default function SignInPage() {
 
     try {
       await signInWithEmail(email, password);
-      const redirectUrl = searchParams.get("redirectUrl") ?? "/";
+      const redirectUrl = searchParams.get("redirectUrl") ?? "/timeline";
       router.push(redirectUrl);
       router.refresh();
     } catch (error) {
@@ -49,17 +42,13 @@ export default function SignInPage() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Sign in</CardTitle>
-        <CardDescription>
-          Enter your email and password to sign in to your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="border-none bg-card/50 shadow-lg backdrop-blur-sm">
+      <CardContent className="pt-6">
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label className="text-sm" htmlFor="email">
+              Email
+            </Label>
             <Input
               id="email"
               name="email"
@@ -67,26 +56,56 @@ export default function SignInPage() {
               placeholder="m@example.com"
               required
               disabled={isLoading}
+              className="h-9"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-sm" htmlFor="password">
+                Password
+              </Label>
+              <Button
+                variant="link"
+                className="h-auto px-0 text-sm font-normal"
+                asChild
+              >
+                <Link href="/auth/reset-password">Forgot password?</Link>
+              </Button>
+            </div>
             <Input
               id="password"
               name="password"
               type="password"
               required
               disabled={isLoading}
+              className="h-9"
             />
           </div>
-          <Button className="w-full" type="submit" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
+          <Button className="h-9 w-full" type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <span>Signing in...</span>
+              </div>
+            ) : (
+              "Sign in"
+            )}
           </Button>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-center">
-        <Button variant="link" asChild>
-          <Link href="/auth/sign-up">Don't have an account? Sign up</Link>
+      <CardFooter className="flex flex-col gap-4 border-t pt-6">
+        <div className="relative w-full">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              New to Tell?
+            </span>
+          </div>
+        </div>
+        <Button variant="outline" className="h-9 w-full" asChild>
+          <Link href="/auth/sign-up">Create an account</Link>
         </Button>
       </CardFooter>
     </Card>

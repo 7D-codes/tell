@@ -5,14 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "~/components/providers/auth-provider";
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { toast } from "~/components/ui/use-toast";
@@ -45,9 +38,9 @@ export default function SignUpPage() {
       await signUp(email, password);
       toast({
         title: "Account created",
-        description: "Please check your email to verify your account",
+        description: "Let's set up your profile",
       });
-      router.push("/auth/sign-in");
+      router.push("/profile/edit");
     } catch (error) {
       toast({
         variant: "destructive",
@@ -61,17 +54,13 @@ export default function SignUpPage() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Create an account</CardTitle>
-        <CardDescription>
-          Enter your email and password to create your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="border-none bg-card/50 shadow-lg backdrop-blur-sm">
+      <CardContent className="pt-6">
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label className="text-sm" htmlFor="email">
+              Email
+            </Label>
             <Input
               id="email"
               name="email"
@@ -79,36 +68,60 @@ export default function SignUpPage() {
               placeholder="m@example.com"
               required
               disabled={isLoading}
+              className="h-9"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label className="text-sm" htmlFor="password">
+              Password
+            </Label>
             <Input
               id="password"
               name="password"
               type="password"
               required
               disabled={isLoading}
+              className="h-9"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Label className="text-sm" htmlFor="confirmPassword">
+              Confirm Password
+            </Label>
             <Input
               id="confirmPassword"
               name="confirmPassword"
               type="password"
               required
               disabled={isLoading}
+              className="h-9"
             />
           </div>
-          <Button className="w-full" type="submit" disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Create account"}
+          <Button className="h-9 w-full" type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <span>Creating account...</span>
+              </div>
+            ) : (
+              "Create account"
+            )}
           </Button>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-center">
-        <Button variant="link" asChild>
-          <Link href="/auth/sign-in">Already have an account? Sign in</Link>
+      <CardFooter className="flex flex-col gap-4 border-t pt-6">
+        <div className="relative w-full">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Already have an account?
+            </span>
+          </div>
+        </div>
+        <Button variant="outline" className="h-9 w-full" asChild>
+          <Link href="/auth/sign-in">Sign in</Link>
         </Button>
       </CardFooter>
     </Card>

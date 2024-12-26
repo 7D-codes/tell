@@ -80,26 +80,24 @@ export type PrismaTell = Prisma.TellGetPayload<{
 }>;
 
 export function formatTellList(tells: PrismaTell[]) {
-  return tells
-    .filter((tell) => tell.reply !== null)
-    .map((t) => ({
-      tellId: t.tellId,
-      tellContent: t.tellContent,
-      tellAuthorId: t.tellAuthorId,
-      tellAuthorUsername: t.tellAuthorUsername,
-      tellCreatedAt: t.tellCreatedAt,
-      reply: t.reply
-        ? {
-            replyId: t.reply.replyId,
-            replyAuthorId: t.reply.replyAuthorId,
-            replyAuthorUsername: t.reply.author.username,
-            replyContent: t.reply.replyContent,
-            replyAuthorName: t.reply.author.name,
-            replyAuthorImage: t.reply.author.image,
-            replyCreatedAt: t.reply.replyCreatedAt,
-          }
-        : null,
-    }));
+  return tells.map((t) => ({
+    tellId: t.tellId,
+    tellContent: t.tellContent,
+    tellAuthorId: t.tellAuthorId,
+    tellAuthorUsername: t.tellAuthorUsername,
+    tellCreatedAt: t.tellCreatedAt,
+    reply: t.reply
+      ? {
+          replyId: t.reply.replyId,
+          replyAuthorId: t.reply.replyAuthorId,
+          replyAuthorUsername: t.reply.author.username,
+          replyContent: t.reply.replyContent,
+          replyAuthorName: t.reply.author.name,
+          replyAuthorImage: t.reply.author.image,
+          replyCreatedAt: t.reply.replyCreatedAt,
+        }
+      : null,
+  }));
 }
 
 type PrismaReply = Prisma.ReplyGetPayload<{

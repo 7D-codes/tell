@@ -1,43 +1,55 @@
-import { publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure } from "~/server/api/trpc";
 
+import { formatTellList } from "~/server/api/utils/helpers";
 import { InfiniteTellsSchema } from "~/validators";
-import { formatTellWithReplyList } from "~/server/api/utils/helpers";
 
-export const infiniteTellsProcedure = publicProcedure
+export const infiniteTellsProcedure = protectedProcedure
   .input(InfiniteTellsSchema)
   .query(async ({ ctx, input: { limit = 20, cursor } }) => {
-    const replies = await ctx.db.reply.findMany({
+    const tells = await ctx.db.tell.findMany({
       take: limit + 1,
       cursor: cursor
         ? {
-            replyId_replyCreatedAt: {
-              replyId: cursor.id,
-              replyCreatedAt: cursor.createdAt,
+            tellId_tellCreatedAt: {
+              tellId: cursor.id,
+              tellCreatedAt: cursor.createdAt,
             },
           }
         : undefined,
-      orderBy: [{ replyCreatedAt: "desc" }, { replyId: "desc" }],
+      where: {
+        recipient: {
+          followers: {
+            some: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
+      },
+      orderBy: [{ tellCreatedAt: "desc" }, { tellId: "desc" }],
       include: {
-        replyTo: true,
-        author: true,
+        reply: {
+          include: {
+            author: true,
+          },
+        },
       },
     });
 
     let nextCursor: typeof cursor | undefined;
 
-    if (replies.length > limit) {
-      const lastReply = replies.pop();
+    if (tells.length > limit) {
+      const lastTell = tells.pop();
 
-      if (lastReply !== null) {
+      if (lastTell) {
         nextCursor = {
-          id: lastReply?.replyId as unknown as string,
-          createdAt: lastReply?.replyCreatedAt as unknown as Date,
+          id: lastTell.tellId,
+          createdAt: lastTell.tellCreatedAt,
         };
       }
     }
 
     return {
-      tells: formatTellWithReplyList(replies),
+      tells: formatTellList(tells),
       nextCursor,
     };
   });

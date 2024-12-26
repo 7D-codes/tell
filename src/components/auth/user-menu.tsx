@@ -1,6 +1,11 @@
 "use client";
 
-import { LogOutIcon, MessageSquareIcon, UserIcon } from "lucide-react";
+import {
+  HomeIcon,
+  LogOutIcon,
+  MessageSquareIcon,
+  UserIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import {
@@ -41,6 +46,10 @@ export function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuItem onClick={() => router.push("/timeline")}>
+          <HomeIcon className="mr-2 h-4 w-4" />
+          <span>Timeline</span>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/profile")}>
           <UserIcon className="mr-2 h-4 w-4" />
           <span>Profile</span>

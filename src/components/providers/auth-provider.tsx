@@ -39,19 +39,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (provider: "github" | "google") => {
     try {
-      const response = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        body: new URLSearchParams({ provider }),
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error);
-      }
-
-      // Redirect to provider's auth page
-      window.location.href = data.url;
+      if (error) throw error;
+      if (data.url) window.location.href = data.url;
     } catch (error) {
       toast({
         title: "Authentication Error",
@@ -64,16 +60,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithEmail = async (email: string, password: string) => {
     try {
-      const response = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        body: new URLSearchParams({ email, password }),
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error);
-      }
+      if (error) throw error;
     } catch (error) {
       toast({
         title: "Authentication Error",
@@ -92,6 +84,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            email_confirmed: true,
+          },
         },
       });
 
