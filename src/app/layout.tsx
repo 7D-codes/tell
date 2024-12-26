@@ -1,20 +1,14 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Providers } from "~/components/providers";
+import { Toaster } from "~/components/ui/toaster";
 import "~/styles/globals.css";
 
-import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
 
-import { Providers } from "~/components/providers";
-import { Header } from "~/components/header";
-import { Toaster } from "~/components/ui/toaster";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
-
-export const metadata = {
-  title: "Tell | Anonymous Messages",
-  description: "Send anonymous messages to friends.",
-  icons: [{ rel: "icon", url: "/favicon.svg" }],
+export const metadata: Metadata = {
+  title: "Tell - Anonymous Messaging",
+  description: "Share your thoughts anonymously with the world.",
 };
 
 export default function RootLayout({
@@ -23,16 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
         <Providers>
-          <div className="container flex h-full flex-col">
-            <Header />
-            <main className="flex min-h-screen w-full max-w-[500px] self-center py-28">
-              {children}
-            </main>
-            <Toaster />
-          </div>
+          {children}
+          <Toaster />
         </Providers>
       </body>
     </html>

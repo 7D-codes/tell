@@ -6,8 +6,8 @@ import { getServerAuthSession } from "~/server/auth";
 import { Button } from "~/components/ui/button";
 import { UserCard } from "~/components/user/user-card";
 
-import { TellList } from "~/components/tell/tell-list";
 import { getSessionUserProfile } from "~/actions/user";
+import { TellList } from "~/components/tell/tell-list";
 
 export default async function ProfilePage() {
   const session = await getServerAuthSession();

@@ -1,16 +1,15 @@
-import { cookies } from "next/headers";
+"use client";
 
-import { TRPCReactProvider } from "~/trpc/react";
-
-import { SessionProvider } from "~/components/providers/session-provider";
-import { ThemeStoreProvider } from "~/components/providers/theme-store-provider";
+import { AuthProvider } from "./auth-provider";
+import { ThemeStoreProvider } from "./theme-store-provider";
+import { TRPCProvider } from "./trpc-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <TRPCReactProvider cookies={cookies().toString()}>
-      <SessionProvider>
+    <TRPCProvider>
+      <AuthProvider>
         <ThemeStoreProvider>{children}</ThemeStoreProvider>
-      </SessionProvider>
-    </TRPCReactProvider>
+      </AuthProvider>
+    </TRPCProvider>
   );
 }
